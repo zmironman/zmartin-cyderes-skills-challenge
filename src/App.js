@@ -1,26 +1,25 @@
 import React from 'react';
-import logo from './logo.svg';
+import ReactDOM from 'react-dom';
 import './App.css';
 
+import {Container, Row, Col} from "react-bootstrap";
+import 'bootstrap/dist/css/bootstrap.css'
+
+import SearchPage from "./views/SearchPage";
+
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    return (
+        <div className="App">
+            <Container fluid>
+                <Row className="mb-lg-3 mt-lg-3">
+                    <Col>
+                        <h1>Zach Martin's IP Information Finder</h1>
+                    </Col>
+                </Row>
+                <SearchPage />
+            </Container>
+        </div>
+    );
 }
 
 export default App;
