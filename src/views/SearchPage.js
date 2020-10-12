@@ -1,6 +1,5 @@
-import {Button, Col, Container, Form, Row} from 'react-bootstrap';
+import {Button, Container, Form} from 'react-bootstrap';
 import React from 'react';
-import ReactDOM from 'react-dom'
 
 const ipRegex = RegExp(/^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/);
 
