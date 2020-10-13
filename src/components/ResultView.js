@@ -37,7 +37,6 @@ export default class ResultView extends React.PureComponent {
                         <Card.Header as='h4'>{this.state.reportTitle}</Card.Header>
                         <Card.Body>
                             <Row className='justify-content-center'>
-                                {/*TODO: build the report body based on report type in a separate component*/}
                                 <ReportBody fullReport={this.props.reportBody} reportType={this.props.reportType}/>
                             </Row>
                             {this.state.showFullReport &&
