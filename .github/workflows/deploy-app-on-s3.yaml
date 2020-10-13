@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       AWS_S3_BUCKET_NAME: zmartin-cyderes-skills-challenge
-      AWS_CF_DISTRIBUTION_ID: E17GK078A6VJ3N
+      AWS_CF_DISTRIBUTION_ID: E32WOI8JYWOR8Z
     strategy:
       matrix:
         node-version: [10.x]
