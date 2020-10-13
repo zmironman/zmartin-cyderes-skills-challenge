@@ -5,11 +5,18 @@ import Spinner from "react-bootstrap/Spinner";
 import axios from 'axios';
 import ResultView from "../components/ResultView";
 
-const ipRegex = RegExp(/^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/);
+const ipv4Regex = RegExp(/^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/);
+const ipRegex = RegExp(/((^\s*((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\s*$)|(^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$))/)
 
-const renderTooltip = (props) => (
+const renderVirusTotalTooltip = (props) => (
     <Tooltip id="button-tooltip" {...props}>
         This can be a large report and may take some time.
+    </Tooltip>
+);
+
+const renderGeodataTooltip = (props) => (
+    <Tooltip id="button-tooltip" {...props}>
+        Currently, Geodata is the only option that supports IPv6
     </Tooltip>
 );
 
@@ -23,6 +30,7 @@ export default class SearchPage extends React.Component {
             geodata: false,
             virustotal: false,
             validIp: false,
+            validIpv4: false,
             loading: false,
             showResults: false,
             reports: []
@@ -35,7 +43,7 @@ export default class SearchPage extends React.Component {
 
         if (!this.state.validIp) {
             console.error('Invalid IP');
-            alert('The IP submitted is invalid.  Please ensure you are submitting a valid IPv4 address.');
+            alert('The IP submitted is invalid.  Please ensure you are submitting a valid IPv4 or IPv6 address.');
             this.setState({loading: false});
         } else if (!this.state.whois && !this.state.geodata && !this.state.virustotal) {
             console.error('Invalid information selection');
@@ -65,6 +73,9 @@ export default class SearchPage extends React.Component {
             if (ipRegex.test(value)) {
                 this.setState({validIp: true})
             }
+            if (ipv4Regex.test(value)) {
+                this.setState({validIpv4: true})
+            }
         }
     };
 
@@ -89,7 +100,7 @@ export default class SearchPage extends React.Component {
                     <Form.Group>
                         <Row className="justify-content-center">
                             <Col>
-                                <Form.Label>Please enter a valid IPv4 IP</Form.Label>
+                                <Form.Label>Please enter a valid IPv4 or IPv6 IP</Form.Label>
                             </Col>
                         </Row>
                         <Row className="justify-content-center">
@@ -107,19 +118,36 @@ export default class SearchPage extends React.Component {
                         </Row>
                         <Row className="justify-content-center">
                             <Col xs={5} s={4} md={3} lg={2}>
-                                <Form.Check label='WhoIs' name='whois' inline onChange={this.handleCheckboxChange}/>
-                            </Col>
-                            <Col xs={5} s={4} md={3} lg={2}>
-                                <Form.Check label='Geo Data' name='geodata' inline
+                                <Form.Check label='WhoIs'
+                                            name='whois'
+                                            disabled={!this.state.validIpv4}
+                                            inline
                                             onChange={this.handleCheckboxChange}/>
                             </Col>
+
+                            <OverlayTrigger
+                                placement="top"
+                                delay={{show: 100, hide: 500}}
+                                overlay={renderGeodataTooltip}
+                            >
+                                <Col xs={5} s={4} md={3} lg={2}>
+                                    <Form.Check label='Geo Data'
+                                                name='geodata'
+                                                disabled={!this.state.validIp}
+                                                inline
+                                                onChange={this.handleCheckboxChange}/>
+                                </Col>
+                            </OverlayTrigger>
                             <OverlayTrigger
                                 placement="bottom"
                                 delay={{show: 100, hide: 500}}
-                                overlay={renderTooltip}
+                                overlay={renderVirusTotalTooltip}
                             >
                                 <Col xs={5} s={4} md={3} lg={2}>
-                                    <Form.Check label={'Virus Total'} name='virustotal' inline
+                                    <Form.Check label={'Virus Total'}
+                                                name='virustotal'
+                                                disabled={!this.state.validIpv4}
+                                                inline
                                                 onChange={this.handleCheckboxChange}/>
                                 </Col>
                             </OverlayTrigger>
