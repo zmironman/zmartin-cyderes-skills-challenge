@@ -92,7 +92,6 @@ export default class SearchPage extends React.Component {
         }
     };
 
-
     render() {
         return (
             <Container fluid>
@@ -127,7 +126,7 @@ export default class SearchPage extends React.Component {
 
                             <OverlayTrigger
                                 placement="top"
-                                delay={{show: 100, hide: 500}}
+                                delay={{show: 200, hide: 500}}
                                 overlay={renderGeodataTooltip}
                             >
                                 <Col xs={5} s={4} md={3} lg={2}>
