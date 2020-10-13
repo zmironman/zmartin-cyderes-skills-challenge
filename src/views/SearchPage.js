@@ -70,6 +70,8 @@ export default class SearchPage extends React.Component {
         const {name, value} = e.target;
         this.setState({ip: value});
         if (name === 'ip') {
+            this.setState({validIp: false});
+            this.setState({validIpv4: false});
             if (ipRegex.test(value)) {
                 this.setState({validIp: true})
             }
