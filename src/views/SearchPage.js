@@ -29,7 +29,7 @@ export default class SearchPage extends React.Component {
 
         if (!this.state.validIp) {
             console.error('Invalid IP');
-            alert('The IP submitted is invalid.  Please ensure you are submitting a valid IPv4 address.')
+            alert('The IP submitted is invalid.  Please ensure you are submitting a valid IPv4 address.');
             this.setState({loading: false});
         } else if (!this.state.whois && !this.state.geodata && !this.state.virustotal) {
             console.error('Invalid information selection');
@@ -37,7 +37,7 @@ export default class SearchPage extends React.Component {
             this.setState({loading: false});
         } else {
             console.log(`Submitted IP: ${this.state.ip}`);
-            const res = await axios
+            await axios
                 .get(`https://blny8i77fj.execute-api.us-east-2.amazonaws.com/Dev/?ip=${this.state.ip}&geodata=${this.state.geodata}&virustotal=${this.state.virustotal}&whois=${this.state.whois}`)
                 .then(response => {
                         console.log(JSON.stringify(response.data, null, 4));
