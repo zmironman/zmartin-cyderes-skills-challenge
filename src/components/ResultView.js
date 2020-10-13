@@ -1,37 +1,44 @@
 import {Row, Col, Card, Button} from 'react-bootstrap';
 import React from 'react';
+import ReportBody from "./ReportBody";
 
-export default class ResultView extends React.Component {
+export default class ResultView extends React.PureComponent {
     constructor(props) {
         super(props);
 
         this.state = {
             reportType: this.props.reportType,
             fullReport: JSON.stringify(this.props.reportBody, null, 4),
-            reportBody: this.props.reportBody,
+            reportTitle: '',
             showFullReport: false
-        }
+        };
     }
 
     handleShowReportClick = () => {
         this.setState({showFullReport: !this.state.showFullReport});
     };
 
+    handleSetup = () => {
+        if (this.props.reportType === 'Whois') {
+            this.setState({reportTitle: 'Who Is'});
+        } else if (this.props.reportType === 'Geodata') {
+            this.setState({reportTitle: 'Geo Data'});
+        } else if (this.props.reportType === 'Virus Total') {
+            this.setState({reportTitle: 'Virus Total'});
+        }
+    };
 
     render() {
+        this.handleSetup();
         return (
             <Row className='justify-content-center'>
                 <Col md={10} lg={8} xs s={12}>
                     <Card className='mb-3 mt-3'>
-                        <Card.Header as='h5'>{this.state.reportType}</Card.Header>
+                        <Card.Header as='h4'>{this.state.reportTitle}</Card.Header>
                         <Card.Body>
                             <Row className='justify-content-center'>
-                                <Col>
-                                    <Card.Text>
-                                        {/*TODO: build the report body based on report type in a separate function*/}
-                                        {this.state.reportBody.toString()}
-                                    </Card.Text>
-                                </Col>
+                                {/*TODO: build the report body based on report type in a separate component*/}
+                                <ReportBody fullReport={this.props.reportBody} reportType={this.props.reportType}/>
                             </Row>
                             {this.state.showFullReport &&
                             <Row className='justify-content-end mt-4 mr-1'>
