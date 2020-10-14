@@ -40,7 +40,9 @@ export default class SearchPage extends React.Component {
     handleSubmit = async e => {
         e.preventDefault();
         this.setState({loading: true, showResults: false});
-
+        if(!this.state.validIpv4){
+            this.setState({whois: false, virustotal: false})
+        }
         if (!this.state.validIp) {
             console.error('Invalid IP');
             alert('The IP submitted is invalid.  Please ensure you are submitting a valid IPv4 or IPv6 address.');
