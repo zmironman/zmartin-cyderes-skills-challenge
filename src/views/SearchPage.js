@@ -40,9 +40,6 @@ export default class SearchPage extends React.Component {
     handleSubmit = async e => {
         e.preventDefault();
         this.setState({loading: true, showResults: false});
-        if(!this.state.validIpv4){
-            this.setState({whois: false, virustotal: false})
-        }
         if (!this.state.validIp) {
             console.error('Invalid IP');
             alert('The IP submitted is invalid.  Please ensure you are submitting a valid IPv4 or IPv6 address.');
@@ -75,7 +72,11 @@ export default class SearchPage extends React.Component {
             this.setState({validIp: false});
             this.setState({validIpv4: false});
             if (ipRegex.test(value)) {
-                this.setState({validIp: true})
+                this.setState({validIp: true});
+                if(!this.state.validIpv4){
+                    console.log('asdfasdfasdf');
+                    this.setState({whois: false, virustotal: false})
+                }
             }
             if (ipv4Regex.test(value)) {
                 this.setState({validIpv4: true})
