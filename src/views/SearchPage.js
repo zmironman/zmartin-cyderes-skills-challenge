@@ -49,17 +49,32 @@ export default class SearchPage extends React.Component {
             alert('Please select the information you would like to see.');
             this.setState({loading: false});
         } else {
-            await axios
-                .get(`https://blny8i77fj.execute-api.us-east-2.amazonaws.com/Dev/?ip=${this.state.ip}&geodata=${this.state.geodata}&virustotal=${this.state.virustotal}&whois=${this.state.whois}`)
-                .then(response => {
-                        this.setState({reports: response.data, showResults: true});
-                        ReactDOM.render(this.buildReports(this.state.reports), document.getElementById('report-view'));
-                    }
-                ).catch(
-                    err => {
-                        console.error(JSON.stringify(err, null, 4))
-                    }
-                );
+            if(!this.state.validIpv4){
+                await axios
+                    .get(`https://blny8i77fj.execute-api.us-east-2.amazonaws.com/Dev/?ip=${this.state.ip}&geodata=${this.state.geodata}&virustotal=${false}&whois=${false}`)
+                    .then(response => {
+                            this.setState({reports: response.data, showResults: true});
+                            ReactDOM.render(this.buildReports(this.state.reports), document.getElementById('report-view'));
+                        }
+                    ).catch(
+                        err => {
+                            console.error(JSON.stringify(err, null, 4))
+                        }
+                    );
+            }
+            else {
+                await axios
+                    .get(`https://blny8i77fj.execute-api.us-east-2.amazonaws.com/Dev/?ip=${this.state.ip}&geodata=${this.state.geodata}&virustotal=${this.state.virustotal}&whois=${this.state.whois}`)
+                    .then(response => {
+                            this.setState({reports: response.data, showResults: true});
+                            ReactDOM.render(this.buildReports(this.state.reports), document.getElementById('report-view'));
+                        }
+                    ).catch(
+                        err => {
+                            console.error(JSON.stringify(err, null, 4))
+                        }
+                    );
+            }
             this.setState({loading: false})
         }
     };
@@ -73,10 +88,6 @@ export default class SearchPage extends React.Component {
             this.setState({validIpv4: false});
             if (ipRegex.test(value)) {
                 this.setState({validIp: true});
-                if(!this.state.validIpv4){
-                    console.log('asdfasdfasdf');
-                    this.setState({whois: false, virustotal: false})
-                }
             }
             if (ipv4Regex.test(value)) {
                 this.setState({validIpv4: true})
